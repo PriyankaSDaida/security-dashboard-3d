@@ -1,79 +1,3 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-=======
 # DefSec 3D Dashboard
 
 **A Next-Generation Security Operations Center (SOC) Interface.**
@@ -89,6 +13,41 @@ DefSec 3D transforms traditional flat vulnerability lists into an immersive **Sp
 ## 🏗 Architecture
 
 The project implements a **Hybrid 2D/3D Architecture**, separating the heavy visualization layer from the interactive UI layer while keeping them synchronized via a global state.
+
+```mermaid
+graph TD
+    User[Analyst User] -->|Interacts| UI[UI Overlay Layer]
+    User -->|Views| Scene[3D Scene Layer]
+
+    subgraph "React App"
+        Router[React Router] --> Login
+        Router --> Dashboard
+    
+        subgraph "Dashboard Page"
+            subgraph "Z-Index: 10 (Overlay)"
+                HUD[Head-Up Display]
+                List[Vulnerability List]
+                Detail[Detail Drawer]
+            end
+
+            subgraph "Z-Index: 1 (Background)"
+                Canvas[R3F Canvas] --> Globe[Threat Map]
+                Canvas --> Stars
+            end
+        end
+
+        subgraph "State Management"
+            Store[Zustand Store]
+            Store -->|Select Threat| Globe
+            Store -->|Highlight Row| List
+            Store -->|Theme Mode| Theme[MUI Theme]
+        end
+    end
+
+    List -->|Update Selection| Store
+    Globe -->|Update Selection| Store
+    HUD -->|Toggle Theme| Store
+```
 
 ### Core Components
 1.  **Scene Layer (Background):** A `React-Three-Fiber` canvas that renders the 3D world (Stars, Lights, Threat Globe). It sits at `z-index: 1`.
@@ -124,58 +83,6 @@ src/
 -   **Language:** TypeScript
 -   **Routing:** React Router v7
 
-=======
-# DefSec 3D Dashboard
-
-**A Next-Generation Security Operations Center (SOC) Interface.**
-
-![Status](https://img.shields.io/badge/Status-Beta-blue)
-![Tech](https://img.shields.io/badge/React-19-61dafb)
-![3D](https://img.shields.io/badge/Three.js-R3F-black)
-
-DefSec 3D transforms traditional flat vulnerability lists into an immersive **Spatial Interface**. By combining a high-performance 2D data grid with a 3D orbital threat map, it allows security analysts to visualize the global distribution of threats, identify critical assets instantly, and manage vulnerabilities with unprecedented context.
-
----
-
-## 🏗 Architecture
-
-The project implements a **Hybrid 2D/3D Architecture**, separating the heavy visualization layer from the interactive UI layer while keeping them synchronized via a global state.
-
-### Core Components
-1.  **Scene Layer (Background):** A `React-Three-Fiber` canvas that renders the 3D world (Stars, Lights, Threat Globe). It sits at `z-index: 1`.
-2.  **UI Layer (Overlay):** A Material UI (MUI) interface using absolute positioning to float above the 3D scene. Interaction clicks pass through empty UI areas to the 3D map.
-3.  **State Management (Glue):** `Zustand` acts as the bridge. Hovering a row in the 2D table updates the store, which triggers the 3D node to highlight, and vice versa.
-
-### File Structure
-```
-src/
-├── components/
-│   ├── canvas/       # 3D Components (R3F)
-│   │   ├── Scene.tsx      # Canvas Setup & Lighting
-│   │   └── ThreatMap.tsx  # The Interactive Globe
-│   ├── ui/           # 2D HUD & Controls (MUI)
-│   │   ├── HUD.tsx        # Top Bar (Stats, Theme Toggle)
-│   │   └── VulnerabilityList.tsx # Interactive Data Grid
-│   └── visuals/      # Shared Design Assets
-├── pages/            # Page Layouts
-│   ├── Dashboard.tsx # Main orchestration logic
-│   └── Login.tsx     # Authentication entry
-├── store.ts          # Global State (Zustand)
-└── theme.ts          # MUI Theme / Design Tokens
-```
-
----
-
-## 🛠 Tech Stack
-
--   **Core Framework:** React 19 (Vite)
--   **3D Engine:** React Three Fiber (Three.js) & Drei (Helpers)
--   **UI Library:** Material UI (MUI) v7
--   **State Management:** Zustand (w/ Persist Middleware)
--   **Language:** TypeScript
--   **Routing:** React Router v7
-
->>>>>>> Stashed changes
 ---
 
 ## ✨ Key Features
@@ -233,7 +140,3 @@ src/
 ---
 
 *Built with ❤️ by the DefSec Team.*
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
