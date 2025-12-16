@@ -48,7 +48,7 @@ export const Scene: React.FC<SceneProps> = ({ children }) => {
                         minDistance={3}
                         maxDistance={20}
                         autoRotate={true}
-                        autoRotateSpeed={0.5}
+                        autoRotateSpeed={2.0}
                     />
                 </Canvas>
             </Suspense>

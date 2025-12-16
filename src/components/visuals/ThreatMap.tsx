@@ -78,13 +78,17 @@ const ThreatNode = ({ position, label, id }: { position: [number, number, number
     );
 };
 
+import { demoData } from '../../data/demo_data';
+import { transformVulnerabilityData } from '../../utils/dataTransformer';
+
 export const ThreatMap = () => {
     const theme = useTheme();
     const globeRef = useRef<THREE.Mesh>(null);
+    const vulnerabilities = transformVulnerabilityData(demoData);
 
     useFrame(() => {
         if (globeRef.current) {
-            globeRef.current.rotation.y += 0.001;
+            globeRef.current.rotation.y += 0.005;
         }
     });
 
@@ -104,10 +108,15 @@ export const ThreatMap = () => {
             {/* Core Glow */}
             <pointLight position={[0, 0, 0]} intensity={2} color={theme.palette.secondary.main} distance={5} />
 
-            {/* Threat Nodes */}
-            <ThreatNode position={[1.5, 0.5, 1]} label="CVE-2024-1234 (Critical)" id="cve-1" />
-            <ThreatNode position={[-1.2, -0.8, 1.2]} label="SQL Injection Detected" id="sql-1" />
-            <ThreatNode position={[0, 1.8, 0.5]} label="Brute Force Attempt" id="auth-1" />
+            {/* Dynamic Threat Nodes */}
+            {vulnerabilities.map((vuln) => (
+                <ThreatNode
+                    key={vuln.id}
+                    position={vuln.coordinates || [1, 0, 0]}
+                    label={`${vuln.id} (${vuln.severity})`}
+                    id={vuln.id}
+                />
+            ))}
         </group>
     );
 };

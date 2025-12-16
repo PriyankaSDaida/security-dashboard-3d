@@ -1,45 +1,45 @@
 import { createTheme, type ThemeOptions } from '@mui/material/styles';
 import type { } from '@mui/x-data-grid/themeAugmentation';
 
-const cyberpunkTheme: ThemeOptions = {
+const getDesignTokens = (mode: 'light' | 'dark'): ThemeOptions => ({
     palette: {
-        mode: 'dark',
+        mode,
         primary: {
-            main: '#00F0FF', // Neon Cyan
-            light: '#69FFF8',
-            dark: '#00B8D4',
-            contrastText: '#000',
+            main: mode === 'dark' ? '#00F0FF' : '#0052cc', // Neon Cyan vs Corporate Blue
+            light: mode === 'dark' ? '#69FFF8' : '#4c8dff',
+            dark: mode === 'dark' ? '#00B8D4' : '#003d99',
+            contrastText: mode === 'dark' ? '#000' : '#fff',
         },
         secondary: {
-            main: '#7000FF', // Neon Purple
+            main: mode === 'dark' ? '#7000FF' : '#6554C0', // Neon Purple vs Muted Purple
             light: '#B350FF',
             dark: '#4A00B3',
             contrastText: '#fff',
         },
         background: {
-            default: '#020205', // Deep Void
-            paper: 'rgba(5, 5, 10, 0.6)', // Glassy
+            default: mode === 'dark' ? '#020205' : '#f0f2f5', // Void vs Light Grey
+            paper: mode === 'dark' ? 'rgba(5, 5, 10, 0.6)' : 'rgba(255, 255, 255, 0.8)',
         },
         text: {
-            primary: '#ffffff',
-            secondary: '#b3b3b3',
+            primary: mode === 'dark' ? '#ffffff' : '#172b4d',
+            secondary: mode === 'dark' ? '#b3b3b3' : '#5e6c84',
         },
         error: {
-            main: '#FF003C', // Cyber Red
+            main: '#FF003C',
         },
         success: {
-            main: '#39FF14', // Neon Green
+            main: '#39FF14',
         },
         warning: {
-            main: '#FFEA00', // Neon Yellow
+            main: '#FFEA00',
         },
     },
     typography: {
-        fontFamily: '"Orbitron", "Roboto", "Helvetica", "Arial", sans-serif',
+        fontFamily: mode === 'dark' ? '"Orbitron", "Roboto", "Helvetica", "Arial", sans-serif' : '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
         h1: {
             fontSize: '3rem',
             fontWeight: 700,
-            textShadow: '0 0 10px rgba(0, 240, 255, 0.5)',
+            textShadow: mode === 'dark' ? '0 0 10px rgba(0, 240, 255, 0.5)' : 'none',
         },
         h2: {
             fontSize: '2.25rem',
@@ -58,16 +58,20 @@ const cyberpunkTheme: ThemeOptions = {
     components: {
         MuiCssBaseline: {
             styleOverrides: {
+                '@keyframes fadeIn': {
+                    '0%': { opacity: 0, transform: 'translateY(10px)' },
+                    '100%': { opacity: 1, transform: 'translateY(0)' }
+                },
                 body: {
-                    backgroundColor: '#020205',
-                    backgroundImage: `
+                    backgroundColor: mode === 'dark' ? '#020205' : '#f0f2f5',
+                    backgroundImage: mode === 'dark' ? `
             radial-gradient(circle at 50% 50%, rgba(112, 0, 255, 0.1) 0%, transparent 50%),
             linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px)
-          `,
-                    backgroundSize: '100% 100%, 40px 40px, 40px 40px', // Grid effect
+          ` : 'none',
+                    backgroundSize: '100% 100%, 40px 40px, 40px 40px',
                     scrollbarWidth: 'thin',
-                    scrollbarColor: '#00F0FF #020205',
+                    scrollbarColor: mode === 'dark' ? '#00F0FF #020205' : '#0052cc #f0f2f5',
                 },
             },
         },
@@ -75,46 +79,46 @@ const cyberpunkTheme: ThemeOptions = {
             styleOverrides: {
                 root: {
                     backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(0, 240, 255, 0.2)',
-                    boxShadow: '0 0 15px rgba(0, 0, 0, 0.5)',
-                    backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%)',
+                    border: mode === 'dark' ? '1px solid rgba(0, 240, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.05)',
+                    boxShadow: mode === 'dark' ? '0 0 15px rgba(0, 0, 0, 0.5)' : '0 1px 3px rgba(0,0,0,0.1)',
+                    backgroundImage: mode === 'dark' ? 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%)' : 'none',
                 },
             },
         },
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: 0, // Cyberpunk sharp edges
+                    borderRadius: mode === 'dark' ? 0 : 4,
                     border: '1px solid transparent',
                     '&:hover': {
-                        border: '1px solid #00F0FF',
-                        boxShadow: '0 0 8px #00F0FF',
+                        border: mode === 'dark' ? '1px solid #00F0FF' : '1px solid #0052cc',
+                        boxShadow: mode === 'dark' ? '0 0 8px #00F0FF' : 'none',
                     }
                 },
                 containedPrimary: {
-                    background: 'linear-gradient(90deg, #00B8D4 0%, #00F0FF 100%)',
-                    color: '#000',
+                    background: mode === 'dark' ? 'linear-gradient(90deg, #00B8D4 0%, #00F0FF 100%)' : '#0052cc',
+                    color: '#fff',
                 },
             },
         },
         MuiDataGrid: {
             styleOverrides: {
                 root: {
-                    border: '1px solid rgba(0, 240, 255, 0.1)',
+                    border: mode === 'dark' ? '1px solid rgba(0, 240, 255, 0.1)' : '1px solid rgba(0,0,0,0.1)',
                     '& .MuiDataGrid-cell': {
                         borderBottom: '1px solid rgba(0, 240, 255, 0.1)',
                     },
                     '& .MuiDataGrid-columnHeaders': {
-                        backgroundColor: 'rgba(0, 240, 255, 0.1)',
-                        borderBottom: '2px solid rgba(0, 240, 255, 0.3)',
+                        backgroundColor: mode === 'dark' ? 'rgba(0, 240, 255, 0.1)' : '#f4f5f7',
+                        borderBottom: mode === 'dark' ? '2px solid rgba(0, 240, 255, 0.3)' : '1px solid #dfe1e6',
                     },
                     '& .MuiDataGrid-row:hover': {
-                        backgroundColor: 'rgba(0, 240, 255, 0.05)',
+                        backgroundColor: mode === 'dark' ? 'rgba(0, 240, 255, 0.05)' : 'rgba(0, 82, 204, 0.04)',
                     },
                 },
             },
         },
     },
-};
+});
 
-export const theme = createTheme(cyberpunkTheme);
+export const getTheme = (mode: 'light' | 'dark') => createTheme(getDesignTokens(mode));
