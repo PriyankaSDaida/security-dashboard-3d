@@ -6,24 +6,20 @@ import { useTheme } from '@mui/material/styles';
 import { useStore } from '../../store';
 import { demoData } from '../../data/demo_data';
 
-// Helper to convert lat/long to vector3
-const latLongToVector3 = (lat: number, lon: number, radius: number) => {
-    const phi = (90 - lat) * (Math.PI / 180);
-    const theta = (lon + 180) * (Math.PI / 180);
-    const x = -(radius * Math.sin(phi) * Math.cos(theta));
-    const z = (radius * Math.sin(phi) * Math.sin(theta));
-    const y = (radius * Math.cos(phi));
-    return new THREE.Vector3(x, y, z);
-};
 
-// Generate random coordinates for demo data since it doesn't have them
-const enrichedData = demoData.map((item, i) => {
-    // Deterministic random based on ID for stable positions
-    const seed = item.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const lat = (seed % 160) - 80; // Avoid extreme poles
-    const lon = ((seed * 13) % 360) - 180;
-    return { ...item, lat, lon };
-});
+// Helper to convert lat/long to vector3 (Deprecated: coordinates are now pre-calculated)
+// const latLongToVector3 = ... 
+
+import { transformVulnerabilityData } from '../../utils/dataTransformer';
+
+// Transform data first
+const allThreats = transformVulnerabilityData(demoData);
+
+// Generate coords is now done in transformer, so we just use the data
+// (Or if transformer adds them, we use them. If not, we map them here)
+// Looking at new transformer, it ADDS coordinates! So we don't need to generate them here.
+
+const enrichedData = allThreats;
 
 export const ThreatMap = () => {
     const theme = useTheme();
@@ -41,13 +37,20 @@ export const ThreatMap = () => {
 
     // Create arcs connecting threats (visual flair)
     const arcs = useMemo(() => {
+        if (!enrichedData.length) return [];
+        if (!enrichedData.length) return [];
         const points = [];
         for (let i = 0; i < 5; i++) {
             // Just some random connections for "network" effect
             const start = enrichedData[i % enrichedData.length];
             const end = enrichedData[(i + 3) % enrichedData.length];
-            const startPos = latLongToVector3(start.lat, start.lon, globeRadius);
-            const endPos = latLongToVector3(end.lat, end.lon, globeRadius);
+            // Use coordinates directly
+            const startPos = start.coordinates
+                ? new THREE.Vector3(start.coordinates[0], start.coordinates[1], start.coordinates[2])
+                : new THREE.Vector3(0, 0, 0);
+            const endPos = end.coordinates
+                ? new THREE.Vector3(end.coordinates[0], end.coordinates[1], end.coordinates[2])
+                : new THREE.Vector3(0, 0, 0);
 
             // Simple quadratic bezier curve for arc
             const midPos = startPos.clone().add(endPos).multiplyScalar(0.5).normalize().multiplyScalar(globeRadius * 1.5);
@@ -92,7 +95,20 @@ export const ThreatMap = () => {
 
             {/* Threat Nodes */}
             {enrichedData.map((item) => {
-                const pos = latLongToVector3(item.lat, item.lon, globeRadius);
+                // Use coordinates from transformer. It returns [x, y, z] directly!
+                // Or if it returns [lat, lon, r], we convert.
+                // The new transformer returns [x, y, z] tuple as `coordinates`.
+                // But let's check the type definition in transformer again.
+                // It says: coordinates: generateRandomSpherePoint(5) -> [x, y, z]
+
+                // So we can use position directly if we have it.
+                // But wait, ThreatMap logic below uses latLongToVector3. 
+                // We should update it to use item.coordinates directly.
+
+                const pos = item.coordinates
+                    ? new THREE.Vector3(item.coordinates[0], item.coordinates[1], item.coordinates[2])
+                    : new THREE.Vector3(0, 0, 0);
+
                 const isSelected = selectedThreat === item.id;
                 const isHovered = hoveredThreat === item.id;
 

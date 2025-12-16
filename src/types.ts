@@ -4,7 +4,10 @@ export interface Vulnerability {
     description: string;
     status: string;
     assigned: string;
-    coordinates?: [number, number, number]; // Optional 3D coordinates for the map
+    currentVersion?: string; // Add these as optional if they are used
+    fixedVersion?: string;
+    package?: string;
+    coordinates?: [number, number, number];
     exploitAvailable: boolean;
     internetFacing: boolean;
     assetCriticality: 'Critical' | 'High' | 'Medium' | 'Low';

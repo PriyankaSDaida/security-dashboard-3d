@@ -1,4 +1,3 @@
-
 import type { Vulnerability } from '../types';
 
 // Flatten the nested JSON structure into our Vulnerability model
@@ -47,7 +46,7 @@ export const transformVulnerabilityData = (data: any): Vulnerability[] => {
                         description: vuln.description || 'No description available.',
                         status: vuln.status || 'Open',
                         assigned: vuln.owner || 'Unassigned',
-                        coordinates: generateRandomSpherePoint(2.2), // Push nodes slightly off surface
+                        coordinates: generateRandomSpherePoint(5), // Push nodes slightly off surface
                         exploitAvailable,
                         internetFacing,
                         assetCriticality,
