@@ -1,4 +1,4 @@
-import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { createTheme, type ThemeOptions } from '@mui/material/styles';
 import type { } from '@mui/x-data-grid/themeAugmentation';
 
 const cyberpunkTheme: ThemeOptions = {
