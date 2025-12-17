@@ -4,7 +4,7 @@ import { Login } from './pages/Login';
 import { useStore } from './store';
 
 // Protected Route Wrapper
-const RequireAuth = ({ children }: { children: JSX.Element }) => {
+const RequireAuth = ({ children }: { children: React.ReactNode }) => {
   const user = useStore((state) => state.user);
   const location = useLocation();
 

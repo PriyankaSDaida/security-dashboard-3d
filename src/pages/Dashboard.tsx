@@ -1,5 +1,5 @@
-import { Box, Typography } from '@mui/material';
-import { useRef } from 'react';
+import { Box } from '@mui/material';
+
 import { Scene } from '../components/canvas/Scene';
 import { ThreatMap } from '../components/canvas/ThreatMap';
 import { HUD } from '../components/ui/HUD';
@@ -13,7 +13,7 @@ export const Dashboard = () => {
             width: '100vw',
             position: 'relative',
             overflow: 'hidden',
-            bgcolor: '#000',
+            bgcolor: 'background.default',
             animation: 'fadeIn 1s ease-out'
         }}>
             {/* 3D Background */}

@@ -26,7 +26,7 @@ export const ThreatMap = () => {
     const groupRef = useRef<THREE.Group>(null);
     const { selectedThreat, setSelectedThreat, hoveredThreat, setHoveredThreat } = useStore();
 
-    useFrame((state) => {
+    useFrame(() => {
         if (groupRef.current) {
             // Slow rotation
             groupRef.current.rotation.y += 0.001;
@@ -112,9 +112,7 @@ export const ThreatMap = () => {
                 const isSelected = selectedThreat === item.id;
                 const isHovered = hoveredThreat === item.id;
 
-                const color = item.severity === 'Critical' ? '#FF003C' :
-                    item.severity === 'High' ? '#FFEA00' :
-                        theme.palette.primary.main;
+                const color = (theme.palette.severity as any)[item.severity.toLowerCase()] || theme.palette.primary.main;
 
                 return (
                     <group key={item.id} position={pos}>
@@ -128,7 +126,7 @@ export const ThreatMap = () => {
                                 document.body.style.cursor = 'pointer';
                                 setHoveredThreat(item.id);
                             }}
-                            onPointerOut={(e) => {
+                            onPointerOut={() => {
                                 document.body.style.cursor = 'auto';
                                 setHoveredThreat(null);
                             }}

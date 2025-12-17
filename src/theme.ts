@@ -1,6 +1,26 @@
 import { createTheme, type ThemeOptions } from '@mui/material/styles';
 import type { } from '@mui/x-data-grid/themeAugmentation';
 
+// Extend palette to include severity
+declare module '@mui/material/styles' {
+    interface Palette {
+        severity: {
+            critical: string;
+            high: string;
+            medium: string;
+            low: string;
+        };
+    }
+    interface PaletteOptions {
+        severity?: {
+            critical?: string;
+            high?: string;
+            medium?: string;
+            low?: string;
+        };
+    }
+}
+
 const getDesignTokens = (mode: 'light' | 'dark'): ThemeOptions => ({
     palette: {
         mode,
@@ -32,6 +52,13 @@ const getDesignTokens = (mode: 'light' | 'dark'): ThemeOptions => ({
         },
         warning: {
             main: '#FFEA00',
+        },
+        // Custom severity palette
+        severity: {
+            critical: '#FF003C', // Red/Pink Neon
+            high: '#FFEA00',     // Yellow Neon
+            medium: '#FFA500',   // Orange
+            low: '#39FF14',      // Green Neon (same as success for now)
         },
     },
     typography: {
