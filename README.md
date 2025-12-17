@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # DefSec 3D Dashboard
 
 **A Next-Generation Security Operations Center (SOC) Interface.**
@@ -6,6 +5,7 @@
 ![Status](https://img.shields.io/badge/Status-Beta-blue)
 ![Tech](https://img.shields.io/badge/React-19-61dafb)
 ![3D](https://img.shields.io/badge/Three.js-R3F-black)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 DefSec 3D transforms traditional flat vulnerability lists into an immersive **Spatial Interface**. By combining a high-performance 2D data grid with a 3D orbital threat map, it allows security analysts to visualize the global distribution of threats, identify critical assets instantly, and manage vulnerabilities with unprecedented context.
 
@@ -49,6 +49,24 @@ graph TD
     Globe -->|Update Selection| Store
     HUD -->|Toggle Theme| Store
 ```
+
+### 🧠 Diagram Explanation
+
+The architecture diagram above illustrates the **Unidirectional Data Flow** and **Layered Rendering** strategy used in this application:
+
+1.  **Dual-Layer Rendering**:
+    *   **The User** sees a composite view. The **UI Overlay Layer** (Z-Index 10) handles traditional interactions (buttons, forms, lists) using Material UI.
+    *   The **3D Scene Layer** (Z-Index 1) runs in the background using `react-three-fiber`. It renders the immersive Global Threat Map.
+    *   **Interaction Tunneling**: We use CSS `pointer-events: none` on the UI container to allow clicks to pass through empty spaces (like between HUD elements) down to the 3D canvas, while keeping buttons clickable (`pointer-events: auto`).
+
+2.  **State Synchronization (The "Glue")**:
+    *   **Zustand Store** serves as the single source of truth. It is not just a data cache, but a messaging bus between the 2D and 3D worlds.
+    *   **Flow Example**:
+        1.  User clicks a row in **Vulnerability List** (2D).
+        2.  `List` component dispatches `setSelectedThreat(id)` to the **Store**.
+        3.  The **Store** updates its state.
+        4.  The **Threat Map** (3D), which subscribes to the store, automatically detects the change and highlights the corresponding node on the globe.
+    *   This decouples the visualizers from each other; the List doesn't know about the Globe, and the Globe doesn't know about the List. They only know about the Store.
 
 ### Core Components
 1.  **Scene Layer (Background):** A `React-Three-Fiber` canvas that renders the 3D world (Stars, Lights, Threat Globe). It sits at `z-index: 1`.
@@ -96,6 +114,7 @@ src/
 ### 2. Advanced Data Operations
 -   **Priority Mode:** Single-click filter for "The Perfect Storm" (Critical Severity + Internet Facing + Exploit Available).
 -   **Smart Filtering:** "Analysis" and "AI Analysis" modes to filter out noise (invalid/norisk statuses).
+-   **SLA Tracking:** Visual cues for overdue items.
 -   **Search:** Instant client-side search across ID and Descriptions.
 
 ### 3. Enterprise Foundations
@@ -138,41 +157,9 @@ src/
     -   Open `http://localhost:5173`
     -   **Login:** `test@test.com` / `password`
 
+### Dataset
+Currently using a static sample in `src/data/demo_data.ts` to keep the repo light. The `dataTransformer` utility handles the flattening and 3D coordinate generation.
+
 ---
 
-*Built with ❤️ by the DefSec Team.*
-=======
-# Security Dashboard 3D
-
-Experimental SOC dashboard built with React 19 and Three.js. It visualizes vulnerability data in 3D to help analysts spot critical threats faster.
-
-![Preview](public/dashboard_preview.png)
-
-## Features
-
-- **3D Threat Map**: Visualizes vulnerabilities as nodes on a globe.
-- **Priority Filtering**: Quick toggle for "Perfect Storm" items (High/Crit + Internet + Expoitable).
-- **Assessment Logic**: Custom filters to weed out 'invalid' or 'norisk' kaiStatus statuses.
-- **SLA Tracking**: Visual cues for overdue items.
-
-## Setup
-
-Standard Vite + React setup.
-
-```bash
-# Install
-npm install
-
-# Dev
-npm run dev
-```
-
-## Dataset
-
-Currently using a static sample in `src/data/demo_data.ts` to keep the repo light.
-The `dataTransformer` utility handles the flattening and 3D coordinate generation.
-
-## License
-
-MIT
->>>>>>> 37a88951a6be753b6aea29e173c23f5273337188
+*Built with ❤️ by Priynka Sudhakar Reddy.*
